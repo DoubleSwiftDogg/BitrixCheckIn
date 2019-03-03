@@ -24,7 +24,8 @@ class WebViewController: UIViewController, WKNavigationDelegate {
         view = webView
         
         //Создаем кнопку
-        let button = UIButton(frame: CGRect(x: 5, y: 35, width: 200, height: 30))
+        let sizeScreen = UIScreen.main.bounds.size.height
+        let button = UIButton(frame: CGRect(x: 5, y: sizeScreen - 35, width: 200, height: 30))
         button.setTitle("Настройка ИД", for: .normal)
         button.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         button.tintColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
