@@ -23,26 +23,39 @@ class WebViewController: UIViewController, WKNavigationDelegate {
         webView.navigationDelegate = self
         view = webView
         
-        //Создаем кнопку
-        let sizeScreen = UIScreen.main.bounds.size.height
-        let button = UIButton(frame: CGRect(x: 5, y: sizeScreen - 35, width: 200, height: 30))
-        button.setTitle("Настройка ИД", for: .normal)
-        button.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        button.tintColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        view.addSubview(button)
+        //Создаем константы для размеров экрана
+        let sizeScreenY = UIScreen.main.bounds.size.height
+        let sizeScreenX = UIScreen.main.bounds.size.width
+        
+        //Создаем кнопку выбора ИД
+        let idButton = UIButton(frame: CGRect(x: 5, y: sizeScreenY - 35, width: 160, height: 30))
+        idButton.setTitle("Настройка ИД", for: .normal)
+        idButton.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        idButton.tintColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        idButton.addTarget(self, action: #selector(buttonActionID), for: .touchUpInside)
+        view.addSubview(idButton)
+        
+        //Создаем кнопку выбора сотрудников отдела
+        let memberButton = UIButton(frame: CGRect(x: sizeScreenX - 165, y: sizeScreenY - 35, width: 160, height: 30))
+        memberButton.setTitle("Сотрудники", for: .normal)
+        memberButton.backgroundColor = #colorLiteral(red: 0.521568656, green: 0.1098039225, blue: 0.05098039284, alpha: 1)
+        memberButton.tintColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        memberButton.addTarget(self, action: #selector(buttonActionMember), for: .touchUpInside)
+        view.addSubview(memberButton)
         
         //Дефолтное значение ИД при первом запуске
         if defaults.string(forKey: "personId") == nil {
             defaults.set("0", forKey: "personId")
         }
         
+        
+        
         //И в конце мы загружаем страницу согласно ИД
         loadBitrix()
     }
     
-    //Нажатие кнопки "Принять"
-    @objc func buttonAction(sender: UIButton!) {
+    //Функционал кнопки "Настройка ИД"
+    @objc func buttonActionID(sender: UIButton!) {
         let ac = UIAlertController(title: "Ваш ИД", message: "Введите ваш ИД", preferredStyle: .alert)
         ac.addTextField { (tf) in
             tf.placeholder = self.personId
@@ -60,6 +73,29 @@ class WebViewController: UIViewController, WKNavigationDelegate {
         ac.addAction(action)
         self.present(ac, animated: true, completion: nil)
     }
+    
+    //Функционал кнопки "Сотрудники"
+    @objc func buttonActionMember(sender: UIButton!) {
+        let ac = UIAlertController(title: "Выберите сотрудника", message: "", preferredStyle: .actionSheet)
+        for member in listID {
+            let key = member.key
+            let value = member.value
+            let action = UIAlertAction(title: key, style: .default) { (action) in
+                let id = value
+                self.defaults.set(id, forKey: "personId")
+                self.loadBitrix()
+            }
+            ac.addAction(action)
+        }
+        
+        let backAction = UIAlertAction(title: "Назад", style: .destructive) { (action) in
+            ac.dismiss(animated: true, completion: nil)
+        }
+        ac.addAction(backAction)
+        
+        self.present(ac, animated: true, completion: nil)
+    }
+    
     
     //Загрузка нужной ссылки
     func loadBitrix() {
