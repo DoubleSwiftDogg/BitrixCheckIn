@@ -15,6 +15,7 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     var personId: String?
     var webView: WKWebView!
     
+    //Запуск приложения
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -48,8 +49,6 @@ class WebViewController: UIViewController, WKNavigationDelegate {
             defaults.set("0", forKey: "personId")
         }
         
-        
-        
         //И в конце мы загружаем страницу согласно ИД
         loadBitrix()
     }
@@ -77,21 +76,21 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     //Функционал кнопки "Сотрудники"
     @objc func buttonActionMember(sender: UIButton!) {
         let ac = UIAlertController(title: "Выберите сотрудника", message: "", preferredStyle: .actionSheet)
-        for member in listID {
-            let key = member.key
-            let value = member.value
+        //Добавляем первым пункт "Назад"
+        let backAction = UIAlertAction(title: "Назад", style: .destructive) { (action) in
+            ac.dismiss(animated: true, completion: nil)
+        }
+        ac.addAction(backAction)
+        //Затем циклом закатываем в наш алерт сотрудников и действия при выборе каждого из них
+        for member in orderListNames {
+            let key = member
             let action = UIAlertAction(title: key, style: .default) { (action) in
-                let id = value
+                let id = listID[member]
                 self.defaults.set(id, forKey: "personId")
                 self.loadBitrix()
             }
             ac.addAction(action)
         }
-        
-        let backAction = UIAlertAction(title: "Назад", style: .destructive) { (action) in
-            ac.dismiss(animated: true, completion: nil)
-        }
-        ac.addAction(backAction)
         
         self.present(ac, animated: true, completion: nil)
     }
