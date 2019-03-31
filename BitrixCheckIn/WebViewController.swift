@@ -56,6 +56,7 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     //Функционал кнопки "Настройка ИД"
     @objc func buttonActionID(sender: UIButton!) {
         let ac = UIAlertController(title: "Ваш ИД", message: "Введите ваш ИД", preferredStyle: .alert)
+        
         ac.addTextField { (tf) in
             tf.placeholder = self.personId
             tf.keyboardType = UIKeyboardType.numberPad
@@ -70,7 +71,9 @@ class WebViewController: UIViewController, WKNavigationDelegate {
             }
         }
         ac.addAction(action)
-        self.present(ac, animated: true, completion: nil)
+        self.present(ac, animated: true) {
+            ac.view.superview?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.dismiss)))
+        }
     }
     
     //Функционал кнопки "Сотрудники"
@@ -92,7 +95,9 @@ class WebViewController: UIViewController, WKNavigationDelegate {
             ac.addAction(action)
         }
         
-        self.present(ac, animated: true, completion: nil)
+        self.present(ac, animated: true) {
+            ac.view.superview?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.dismiss)))
+        }
     }
     
     
